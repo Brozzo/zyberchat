@@ -50,8 +50,11 @@ class CyberChat < Sinatra::Application
 	post '/messages' do
 		
 		str = params[:message]
-		s = str.downcase.split
-		print = (params[:message].length > 0)
+		if str.length > 0
+			print = true
+		else
+			print = false
+		end
 		
 		#admin commands
 		if session[:auth] == :admin
@@ -73,19 +76,7 @@ class CyberChat < Sinatra::Application
 			end
 		end
 		
-		if s.any? {|word| word =~ @@badwords}
-			str = ''
-			s.each do |x|
-				l = x.length
-				if x =~ @@badwords
-					l.times {str += '*'}
-					str += ' '
-				else
-					str += "#{x} "
-				end
-			end
-		end
-		
+		str.gsub!(@@badwords, '*')
 		hour = Time.now.hour
 		minute = Time.now.min
 		
@@ -95,9 +86,9 @@ class CyberChat < Sinatra::Application
 		str = "#{session[:name]} - #{time} said: #{str}"
 		$messages << str if print
 		
-		message_num = 0
-		$messages.each {message_num += 1}
-		$messages.delete_at(0) if message_num > 40
+		n = 0
+		$messages.each {n += 1}
+		$messages.delete_at(0) if n > 40
 
 	end
 end
