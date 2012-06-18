@@ -11,7 +11,6 @@ class CyberChat < Sinatra::Application
 	set :password, '1337'
 	set :admin_password, 'gosebrozz1'
 	enable :sessions
-	@login = false
 	@name = ''
 	$messages = []
 	$color = ['#00FF00', '#000000']
@@ -21,9 +20,8 @@ class CyberChat < Sinatra::Application
 	get ('/') {haml :startpage}
 	
 	get '/chat' do
-		#redirect '/' unless @login
+		redirect '/' unless session[:auth]
 		haml :chat
-		"<p>-#{@login.to_s}</p>"
 	end
 	
 	get '/fetch_messages' do
@@ -35,12 +33,10 @@ class CyberChat < Sinatra::Application
 		elsif params[:password] == settings.admin_password
 			@name = params[:username]
 			session[:auth] = :admin
-			@login = true
 			redirect '/chat'
 		elsif params[:password] == settings.password
 			@name = params[:username]
 			session[:auth] = :user
-			@login = true
 			redirect '/chat'
 		end
 
@@ -48,8 +44,7 @@ class CyberChat < Sinatra::Application
 	end
 	
 	get '/logout' do
-		session[:auth] = :none
-		@login = false
+		session[:auth] = nil
 		redirect '/'
 	end
 	
