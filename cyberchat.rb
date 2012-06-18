@@ -30,7 +30,7 @@ class CyberChat < Sinatra::Application
 	
 	post '/login' do
 		if params[:username].downcase =~ @@badnames
-			redirect '/badname'
+			haml :badname
 		elsif params[:password] == settings.admin_password
 			@name = params[:username]
 			@login = true
@@ -47,7 +47,7 @@ class CyberChat < Sinatra::Application
 	end
 	
 	get '/logout' do
-		session[:auth] = nil
+		session[:auth] = :none
 		@login = false
 		redirect '/'
 	end
