@@ -11,7 +11,6 @@ class CyberChat < Sinatra::Application
 	set :password, '1337'
 	set :admin_password, 'gosebrozz1'
 	enable :sessions
-	@name = ''
 	$messages = []
 	$color = ['#00FF00', '#000000']
 	
@@ -31,11 +30,11 @@ class CyberChat < Sinatra::Application
 	post '/login' do
 		if params[:username].downcase =~ @@badnames
 		elsif params[:password] == settings.admin_password
-			@name = params[:username]
+			session[:name] = params[:username]
 			session[:auth] = :admin
 			redirect '/chat'
 		elsif params[:password] == settings.password
-			@name = params[:username]
+			session[:name] = params[:username]
 			session[:auth] = :user
 			redirect '/chat'
 		end
@@ -93,7 +92,7 @@ class CyberChat < Sinatra::Application
 		(0..14) === hour ? hour += 9 : hour -= 15
 		(0..9) === minute ? time = "#{hour}:0#{minute}" : time = "#{hour}:#{minute}"
 		
-		str = "#@name - #{time} said: #{str}"
+		str = "#{session[:name]} - #{time} said: #{str}"
 		$messages << message if print
 		
 		message_num = 0
