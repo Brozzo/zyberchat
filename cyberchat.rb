@@ -1,6 +1,6 @@
 require 'rubygems'
-require 'data_mapper'
-require 'dm-postgres-adapter'
+#require 'data_mapper'
+#require 'dm-postgres-adapter'
 require './badwords.rb'
 require 'sass'
 
@@ -12,14 +12,13 @@ class CyberChat < Sinatra::Application
 	set :admin_password, 'gosebrozz1'
 	enable :sessions
 	session[:auth] = nil
-	@@users = 0	
 	@login = false
 	@name = ''
 	$messages = []
 	$color = ['#00FF00', '#000000']
 	
-	get ("/style.css") {sass :style}
-	get ("/") {haml :startpage}
+	get ('/style.css') {sass :style}
+	get ('/') {haml :startpage}
 	
 	get '/chat' do
 		redirect '/' unless @login
@@ -34,13 +33,11 @@ class CyberChat < Sinatra::Application
 		if params[:username].downcase =~ @@badnames
 			redirect '/badname'
 		elsif params[:password] == settings.admin_password
-			@@users += 1
 			@name = params[:username]
 			@login = true
 			session[:auth] = :admin
 			redirect '/chat'
 		elsif params[:password] == settings.password
-			@@users += 1
 			@name = params[:username]
 			session[:auth] = :user
 			@login = true
@@ -60,7 +57,7 @@ class CyberChat < Sinatra::Application
 		
 		str = params[:message]
 		s = str.downcase.split
-		print = true
+		print = (params[:message].length > 0)
 		
 		#admin commands
 		if session[:auth] == :admin
@@ -98,26 +95,15 @@ class CyberChat < Sinatra::Application
 		hour = Time.now.hour
 		minute = Time.now.min
 		
-		0..14 === hour ? hour += 9 : hour -= 15
-		0..9 === minute ? time = "#{hour}:0#{minute}" : time = "#{hour}:#{minute}"
+		(0..14) === hour ? hour += 9 : hour -= 15
+		(0..9) === minute ? time = "#{hour}:0#{minute}" : time = "#{hour}:#{minute}"
 		
 		str = "#@name - #{time} said: #{str}"
-		
-		num, mess = 0, ''
-		message.each_char do |char|
-			num += 1
-			if (num == 60 or num == 114) then mess += char + '<br>'
-			else mess += char
-			end
-		end
-		
-		if (params[:message].length > 0 and session[:name].length > 0 and not delete)
-			$messages << mess
-		end
+		$messages << message if print
 		
 		message_num = 0
 		$messages.each {message_num += 1}
 		$messages.delete_at(0) if message_num > 40
-		$messages.delete_if {|m| m =~ /C:\\cyberchat\\.*\\.*> \/commands/ }
+
 	end
 end
