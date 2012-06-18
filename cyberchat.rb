@@ -93,7 +93,7 @@ class CyberChat < Sinatra::Application
 		(0..9) === minute ? time = "#{hour}:0#{minute}" : time = "#{hour}:#{minute}"
 		
 		str = "#{session[:name]} - #{time} said: #{str}"
-		$messages << message if print
+		$messages << str if print
 		
 		message_num = 0
 		$messages.each {message_num += 1}
