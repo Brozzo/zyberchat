@@ -15,10 +15,6 @@ class CyberChat < Sinatra::Application
 	@name = ''
 	$messages = []
 	$color = ['#00FF00', '#000000']
-
-	def initialize
-		session[:auth] = :none
-	end
 	
 	get ('/style.css') {sass :style}
 	get ('/') {haml :startpage}
