@@ -28,7 +28,7 @@ class CyberChat < Sinatra::Application
 	end
 	
 	post '/login' do
-		if params[:username].downcase =~ @@badnames
+		if (params[:username].downcase =~ @@badnames or params[:username].length < 1)
 		elsif params[:password] == settings.admin_password
 			session[:name] = params[:username]
 			session[:auth] = :admin
@@ -58,7 +58,7 @@ class CyberChat < Sinatra::Application
 		end
 		
 		#admin commands
-		if session[:auth] == :admin
+		if 1 == 0 #if session[:auth] == :admin
 			if s[0] == '/delete'
 				if s[1].to_i != 0
 					n = s[1].to_i - 1
