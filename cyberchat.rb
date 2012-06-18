@@ -20,7 +20,7 @@ class CyberChat < Sinatra::Application
 	get ('/') {haml :startpage}
 	
 	get '/chat' do
-		#redirect '/' unless @login
+		redirect '/' unless @login
 		haml :chat
 	end
 	
