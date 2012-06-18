@@ -11,11 +11,14 @@ class CyberChat < Sinatra::Application
 	set :password, '1337'
 	set :admin_password, 'gosebrozz1'
 	enable :sessions
-	session[:auth] = nil
 	@login = false
 	@name = ''
 	$messages = []
 	$color = ['#00FF00', '#000000']
+
+	def initialize
+		session[:auth] = nil
+	end
 	
 	get ('/style.css') {sass :style}
 	get ('/') {haml :startpage}
