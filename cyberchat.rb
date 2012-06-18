@@ -17,11 +17,13 @@ class CyberChat < Sinatra::Application
 	$color = ['#00FF00', '#000000']
 	
 	get ('/style.css') {sass :style}
+	get ('/error') {haml :error}
 	get ('/') {haml :startpage}
 	
 	get '/chat' do
-		redirect '/' unless @login
+		#redirect '/' unless @login
 		haml :chat
+		@login
 	end
 	
 	get '/fetch_messages' do
@@ -42,7 +44,7 @@ class CyberChat < Sinatra::Application
 			redirect '/chat'
 		end
 
-		haml :error
+		redirect '/error'
 	end
 	
 	get '/logout' do
