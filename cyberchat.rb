@@ -50,6 +50,7 @@ class CyberChat < Sinatra::Application
 	post '/messages' do
 		
 		str = params[:message]
+		s = str.downcase.split
 		if str.length > 0
 			print = true
 		else
