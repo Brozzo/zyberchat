@@ -17,7 +17,7 @@ class CyberChat < Sinatra::Application
 	$color = ['#00FF00', '#000000']
 
 	def initialize
-		session[:auth] = nil
+		session[:auth] = :none
 	end
 	
 	get ('/style.css') {sass :style}
