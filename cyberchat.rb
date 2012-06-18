@@ -23,7 +23,7 @@ class CyberChat < Sinatra::Application
 	get '/chat' do
 		#redirect '/' unless @login
 		haml :chat
-		"<p>-#@login</p>"
+		"<p>-#{@login.to_s}</p>"
 	end
 	
 	get '/fetch_messages' do
