@@ -78,8 +78,8 @@ class CyberChat < Sinatra::Application
 		end
 		
 		str.gsub!(@@badwords, '*')
-		hour = Time.now.localtime('+01:00').hour
-		minute = Time.now.localtime('+01:00').min
+		hour = Time.now.localtime('+02:00').hour
+		minute = Time.now.localtime('+02:00').min
 		
 		(0..9) === minute ? time = "#{hour}:0#{minute}" : time = "#{hour}:#{minute}"
 		
