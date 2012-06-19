@@ -12,7 +12,7 @@ $(document).ready (function() {
 		$.post("/messages", $(this).serialize() )
 		$("#input2").val("")
 	})
-	setInterval('fetchMessages()',1000
+	setInterval('fetchMessages()', 1000
 )	
 })
 
