@@ -58,7 +58,7 @@ class CyberChat < Sinatra::Application
 		end
 		
 		#admin commands
-		if 1 == 0 #if session[:auth] == :admin
+		if session[:auth] == :admin
 			if s[0] == '/delete'
 				if s[1].to_i != 0
 					n = s[1].to_i - 1
@@ -71,7 +71,7 @@ class CyberChat < Sinatra::Application
 			elsif s[0] == '/color'
 				$color[0] = s[1]
 				print = false
-			elsif command[0] == '/bgcolor'
+			elsif s[0] == '/bgcolor'
 				$color[1] = s[1]
 				print = false
 			end
@@ -84,7 +84,11 @@ class CyberChat < Sinatra::Application
 		(0..14) === hour ? hour += 9 : hour -= 15
 		(0..9) === minute ? time = "#{hour}:0#{minute}" : time = "#{hour}:#{minute}"
 		
-		str = "#{session[:name]} - #{time} said: #{str}"
+		str = "#{session[:name]} - #{time} said: #{str}".split(//)
+		t = str.length/60
+		t += 1 if str.length%60 > 0
+		t.times{|x| str.insert(60*x, '<br>') }
+		str = str.join
 		$messages << str if print
 		
 		n = 0
