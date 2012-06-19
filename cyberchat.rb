@@ -81,7 +81,6 @@ class CyberChat < Sinatra::Application
 		hour = Time.now.hour
 		minute = Time.now.min
 		
-		(0..14) === hour ? hour += 9 : hour -= 15
 		(0..9) === minute ? time = "#{hour}:0#{minute}" : time = "#{hour}:#{minute}"
 		
 		str = "#{session[:name]} - #{time} said: #{str}".split(//)
