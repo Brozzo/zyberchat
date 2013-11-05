@@ -1,6 +1,6 @@
 %h1#cyber_home.cyber
 	%img{:src => "images/cyber.gif"}
-%p.welcome Welcome to Cyberchat!!!
+%p.welcome Come to Cyberchat!!!
 %form#login_thing{:action => "/login", :method => "post"}
 	%input.input.username{:name => "username", :maxlength => "15", :placeholder => "username"}
 	%input.input.password{:name => "password", :type => "password", :maxlength => "15", :placeholder => "password"}
