@@ -3,22 +3,40 @@ require 'data_mapper'
 require 'dm-postgres-adapter'
 require './badwords.rb'
 require 'sass'
-DataMapper.setup(:default, ENV['DATABASE_URL'] || "postgres://#{Dir.pwd}/cyberchat.db") #HEROKU_POSTGRESQL_GOLD_URL?
+DataMapper.setup(:default, ENV['DATABASE_URL'] || "postgres://#{File.dirname(File.expand_path(__FILE__))}/cyberchat.db")
+
+class User
+	include DataMapper::Resource
+
+	property :id,    Serial
+	property :name,  String, :default => 'anonymous'
+	property :admin, Boolean,  :default => false
+	property :logged_in, Boolean, :default => false
+end
+
+DataMapper.finalize
 
 class CyberChat < Sinatra::Application
-	
+
 	set :password, '1337'
 	set :admin_password, 'gosebrozz1'
-	enable :sessions
 	$messages = []
 	$color = ['#00FF00', '#000000']
-	
+
+	def initialize
+		@user = User.create
+	end
+
+    configure :development do  
+        DataMapper.auto_upgrade!  
+    end
+  
 	get ('/style.css') {sass :style}
 	get ('/error') {haml :error}
 	get ('/') {haml :startpage}
 	
 	get '/chat' do
-		redirect '/' unless session[:auth]
+		redirect '/' unless @user.logged_in
 		haml :chat
 	end
 	
@@ -29,12 +47,11 @@ class CyberChat < Sinatra::Application
 	post '/login' do
 		if (params[:username].downcase =~ @@badnames or params[:username].length < 1)
 		elsif params[:password] == settings.admin_password
-			session[:name] = params[:username]
-			session[:auth] = :admin
+			@user.logged_in = true
+			@user.admin = true
 			redirect '/chat'
 		elsif params[:password] == settings.password
-			session[:name] = params[:username]
-			session[:auth] = :user
+			@user.logged_in = true
 			redirect '/chat'
 		end
 
@@ -42,7 +59,8 @@ class CyberChat < Sinatra::Application
 	end
 	
 	get '/logout' do
-		session[:auth] = nil
+		@user.logged_in = false
+		@user.admin = false
 		redirect '/'
 	end
 	
@@ -57,7 +75,7 @@ class CyberChat < Sinatra::Application
 		end
 		
 		#admin commands
-		if session[:auth] == :admin
+		if @user.admin
 			if s[0] == '/delete'
 				if s[1].to_i != 0
 					n = s[1].to_i - 1
