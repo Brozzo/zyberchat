@@ -1,9 +1,8 @@
 require 'rubygems'
 require 'data_mapper'
-require 'dm-postgres-adapter'
 require './badwords.rb'
 require 'sass'
-DataMapper.setup(:default, ENV['DATABASE_URL'] || "postgres://#{Dir.pwd}/cyberchat.db") #HEROKU_POSTGRESQL_GOLD_URL?
+DataMapper.setup(:default, "postgres://#{Dir.pwd}/cyberchat.db")
 
 class CyberChat < Sinatra::Application
 	
